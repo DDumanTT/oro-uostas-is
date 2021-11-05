@@ -1,43 +1,39 @@
 import * as React from 'react';
-import styled from 'styled-components/macro';
-import { Logo } from './Logo';
-import { StyleConstants } from 'styles/StyleConstants';
-import { Nav } from './Nav';
-import { PageWrapper } from '../PageWrapper';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 
-export function NavBar() {
+export default function NavBar() {
   return (
-    <Wrapper>
-      <PageWrapper>
-        <Logo />
-        <Nav />
-      </PageWrapper>
-    </Wrapper>
+    <Box
+      sx={{
+        flexGrow: 1,
+        borderRadius: 2,
+        overflow: 'hidden',
+        marginTop: 1,
+      }}
+    >
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            News
+          </Typography>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
-
-const Wrapper = styled.header`
-  box-shadow: 0 1px 0 0 ${p => p.theme.borderLight};
-  height: ${StyleConstants.NAV_BAR_HEIGHT};
-  display: flex;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: ${p => p.theme.background};
-  z-index: 2;
-
-  @supports (backdrop-filter: blur(10px)) {
-    backdrop-filter: blur(10px);
-    background-color: ${p =>
-      p.theme.background.replace(
-        /rgba?(\(\s*\d+\s*,\s*\d+\s*,\s*\d+)(?:\s*,.+?)?\)/,
-        'rgba$1,0.75)',
-      )};
-  }
-
-  ${PageWrapper} {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
