@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 
 export default function NavBar() {
   return (
@@ -19,19 +21,22 @@ export default function NavBar() {
     >
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
+          <Box sx={{ flexGrow: 1 }}>
+            <Button color="inherit" variant="outlined" component={Link} to="/">
+              Darbo ✈️ Partija
+            </Button>
+          </Box>
+          {/* Nerenderinti jei vartotojas prisijunges */}
+          <Button color="inherit" component={Link} to="/login">
+            Login
+          </Button>
+
+          {/* Renderinti jei vartotojas prisijunges */}
+          <Button color="inherit" component={Link} to="/gamble">
+            Gamble
+          </Button>
+          {/* Renderinti jei vartotojas prisijunges */}
+          {/* cia turi buti vartotojo profilis */}
         </Toolbar>
       </AppBar>
     </Box>

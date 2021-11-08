@@ -17,8 +17,7 @@ import 'sanitize.css/sanitize.css';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import NavBar from 'app/components/NavBar';
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 // Import root app
 import { App } from 'app';
@@ -29,20 +28,32 @@ import { configureAppStore } from 'store/configureStore';
 
 import reportWebVitals from 'reportWebVitals';
 
+import { styled } from '@mui/material/styles';
+
 // Initialize languages
 import './locales/i18n';
 
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+  // components: {
+  //   MuiButtonBase: {
+  //     defaultProps: {
+  //       disableRipple: true,
+  //     },
+  //   },
+  // },
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <HelmetProvider>
       <ThemeProvider theme={theme}>
         <Container>
-          <NavBar />
           <React.StrictMode>
             <App />
           </React.StrictMode>

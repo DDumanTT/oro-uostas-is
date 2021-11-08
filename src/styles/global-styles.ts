@@ -26,4 +26,8 @@ export const GlobalStyle = createGlobalStyle`
     font-family: inherit;
     font-size: inherit;
   }
+
+  /* .MuiButtonBase-root:active {
+    background-color: pink;
+  } */
 `;
