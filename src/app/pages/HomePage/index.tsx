@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -15,7 +15,8 @@ import {
 } from '@mui/material';
 import FeaturedCard from './components/FuturedCard';
 
-export function HomePage({ history }) {
+export function HomePage() {
+  const navigate = useNavigate();
   const [from, setFrom] = React.useState('');
   const [to, setTo] = React.useState('');
   const [error, setError] = React.useState(false);
@@ -23,7 +24,7 @@ export function HomePage({ history }) {
   const onChange = (e, set) => {
     set(e.target.value);
   };
-
+  // () => history.push('/from:' + from + '/to:' + to)
   return (
     <StyledHomePage>
       <Helmet>
@@ -33,7 +34,7 @@ export function HomePage({ history }) {
       <Banner>
         <SearchContainer
           component="form"
-          onSubmit={() => history.push('/from:' + from + '/to:' + to)}
+          onSubmit={() => navigate('/from:' + from + '/to:' + to)}
         >
           <Grid
             container
@@ -80,14 +81,14 @@ export function HomePage({ history }) {
           </Typography>
         </Grid>
         <Grid item xs={6} md={3}>
-          <FeaturedCard title="Russia" img="img/russia.jpg">
+          <FeaturedCard title="Russia" img="/img/russia.jpg">
             The world's largest country offers it all, from historic cities and
             idyllic countryside to artistic riches, epic train rides and
             vodka-fuelled nightlife.
           </FeaturedCard>
         </Grid>
         <Grid item xs={6} md={3}>
-          <FeaturedCard title="China" img="img/china.jpg">
+          <FeaturedCard title="China" img="/img/china.jpg">
             The third largest country (after Russia and Canada), it has
             everything that can be interesting to a foreigner: architectural
             monuments of one of the most ancient civilizations, national parks
@@ -96,7 +97,7 @@ export function HomePage({ history }) {
           </FeaturedCard>
         </Grid>
         <Grid item xs={6} md={3}>
-          <FeaturedCard title="America" img="img/banner.png">
+          <FeaturedCard title="America" img="/img/banner.png">
             The United States of America is the world's third largest country in
             size and nearly the third largest in terms of population. Located in
             North America, the country is bordered on the west by the Pacific
@@ -104,17 +105,79 @@ export function HomePage({ history }) {
           </FeaturedCard>
         </Grid>
       </FutureCardShape>
-      <NinjaContainer mt={10}>
-        <Grid container justifyContent="center" spacing={1} sx={{ zIndex: 2 }}>
-          <Grid item xs={12} md={4}>
-            <img width={300} src="img/people-flying.svg" />
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <Typography mt={5} variant="h4" gutterBottom component="div">
+      <Typography
+        mt={8}
+        sx={{ textAlign: 'center' }}
+        variant="h4"
+        component="div"
+      >
+        We offer you:
+      </Typography>
+      <NinjaContainer gradient mt={4} spacing={1} sx={{ zIndex: 2 }}>
+        <Grid item xs={12} md={4}>
+          <img width={300} src="/img/people-flying.svg" />
+        </Grid>
+        <Grid container alignItems="center" item xs={12} md={7}>
+          <Box>
+            <Typography variant="h4" gutterBottom component="div">
               Fly towards your deepest desires, travel across the world with
               just few clicks!
             </Typography>
-          </Grid>
+            <Typography variant="body1" gutterBottom>
+              Buy tickets with just few clicks! Yep, its that easy. Search for
+              your desired location and chose between multiple flight options.
+            </Typography>
+          </Box>
+        </Grid>
+      </NinjaContainer>
+      <NinjaContainer mt={4} spacing={1} sx={{ zIndex: 2 }}>
+        <Grid item xs={12} md={4}>
+          <img width={300} src="/img/undraw_social_friends_re_7uaa.svg" />
+        </Grid>
+        <Grid container alignItems="center" item xs={12} md={7}>
+          <Box>
+            <Typography variant="h4" gutterBottom component="div">
+              Easy and intuitive way to buy tickets and enjoy your vacation!
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Save more time by using easy and intuitive design of the webpage!
+              Its super simple to buy tickets, just type your destination and
+              off you go!
+            </Typography>
+          </Box>
+        </Grid>
+      </NinjaContainer>
+      <NinjaContainer mt={4} spacing={1} sx={{ zIndex: 2 }}>
+        <Grid item xs={12} md={4}>
+          <img width={300} src="/img/undraw_winners_ao-2-o.svg" />
+        </Grid>
+        <Grid container alignItems="center" item xs={12} md={7}>
+          <Box>
+            <Typography variant="h4" gutterBottom component="div">
+              Buy tickets and participate in lottery to win amazing prizes!
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Win free vacion or other great prizes! When you buy a ticket you
+              have a chance to participate in a wheel spin and win great prizes!
+              Free vacation, monetary prizes, merch, just name it!
+            </Typography>
+          </Box>
+        </Grid>
+      </NinjaContainer>
+      <NinjaContainer endline mt={4} spacing={1} sx={{ zIndex: 2 }}>
+        <Grid item xs={12} md={4}>
+          <img width={300} src="/img/undraw_discount_d-4-bd.svg" />
+        </Grid>
+        <Grid container alignItems="center" item xs={12} md={7}>
+          <Box>
+            <Typography variant="h4" gutterBottom component="div">
+              Big discounts every day!
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              We ar competitive and aim to provide highest discounts across the
+              industry. Make sure to check for great discounts every day!
+            </Typography>
+          </Box>
         </Grid>
       </NinjaContainer>
       {/* <Box mt={15} sx={{ display: 'flex', justifyContent: 'right' }}>
@@ -150,20 +213,21 @@ const StyledHomePage = styled(Box)`
   }
 `;
 
-const NinjaContainer = styled(Grid)`
+const NinjaContainer = styled<any>(Grid)`
+  position: relative;
   display: flex;
   justify-content: center;
-  background-image: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+  transform: scale(0.85);
   border-radius: 5px;
-`;
+  background-image: ${props =>
+    props.gradient && 'linear-gradient(to right, #30cfd0 0%, #330867 100%)'};
+}
 
-const FutureCardShape = styled(Grid)`
-  position: relative;
   &:before {
     content: '';
+    display: ${props => !props.endline && 'none'};
     position: absolute;
-    width: 80%;
-    left: 24px;
+    width: 100%;
     height: 10px;
     bottom: -60px;
     background-image: linear-gradient(to right, #30cfd0 0%, #330867 100%);
@@ -171,11 +235,15 @@ const FutureCardShape = styled(Grid)`
   }
 `;
 
+const FutureCardShape = styled(Grid)`
+  position: relative;
+`;
+
 const Banner = styled(Box)`
   position: relative;
   width: 100%;
   height: 650px;
-  background-image: url('img/banner.png');
+  background-image: url('/img/banner.png');
   background-position: center;
   background-size: fit;
   background-repeat: no-repeat;

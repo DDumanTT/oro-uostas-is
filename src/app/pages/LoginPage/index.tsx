@@ -26,7 +26,7 @@ function Copyright(props: any) {
       align="center"
       {...props}
     >
-      {'Copyright © '}
+      {'Copyright ©Darbo Partija 2021'}
       <Link component={RouterLink} color="inherit" to="https://mui.com/">
         Your Website
       </Link>{' '}

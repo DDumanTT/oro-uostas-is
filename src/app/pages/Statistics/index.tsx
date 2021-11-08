@@ -5,20 +5,33 @@
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { useTranslation } from 'react-i18next';
 import { messages } from './messages';
+import { Box } from '@mui/material';
 
 interface Props {}
 
-export function Statistics(props: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t, i18n } = useTranslation();
+const dataFlights = [];
+const dataUsersIntrests = [];
+const dataGambleWinners = [];
+const dataTransactions = [];
 
+export function Statistics(props: Props) {
   return (
-    <Div>
-      {t('')}
-      {/*  {t(...messages.someThing())}  */}
-    </Div>
+    <Box>
+      {/* https://www.npmjs.com/package/@carbon/charts-react */}
+      {/* https://github.com/carbon-design-system/carbon-charts/tree/master/packages/react */}
+      {/* https://charts.carbondesignsystem.com/?path=/story/docs-getting-started--react */}
+      {/* https://charts.carbondesignsystem.com/react/?path=/story/simple-charts-combo--combo-line-simple-bar-custom-configs */}
+      {/* dazniausiu skrydziu atvaizdaviams */}
+
+      {/* Vartotoju interesu atvaizdavimas */}
+
+      {/* Loterijos laimetoju statistika */}
+
+      {/* Transakciju statistika */}
+
+      <Box>Statistikos langas</Box>
+    </Box>
   );
 }
 

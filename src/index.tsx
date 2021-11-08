@@ -17,8 +17,6 @@ import 'sanitize.css/sanitize.css';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { Box, Container } from '@mui/material';
-
 // Import root app
 import { App } from 'app';
 
@@ -27,8 +25,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import { configureAppStore } from 'store/configureStore';
 
 import reportWebVitals from 'reportWebVitals';
-
-import { styled } from '@mui/material/styles';
 
 // Initialize languages
 import './locales/i18n';
@@ -53,11 +49,9 @@ ReactDOM.render(
   <Provider store={store}>
     <HelmetProvider>
       <ThemeProvider theme={theme}>
-        <Container>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </Container>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
       </ThemeProvider>
     </HelmetProvider>
   </Provider>,

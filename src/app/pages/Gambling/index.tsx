@@ -24,14 +24,19 @@ export interface State extends SnackbarOrigin {
 const Item = styled(Box)`
   text-align: center;
   flex: flex;
-  /* justify-content: center; */
+`;
+
+const SpinsLeft = styled(Box)`
+  text-align: right;
+  margin-top: 20px;
+  flex: flex;
 `;
 
 const data = [
   { option: '$$$' },
   { option: '$$$' },
   { option: '$$$' },
-  { option: 'Skrydis' },
+  { option: '$$$' },
   { option: '$$$' },
   { option: '$$$' },
   { option: 'Skrydis' },
@@ -111,14 +116,18 @@ export function Gambling(props: Props) {
 
   return (
     <Box>
-      <Chip
-        icon={<LoopIcon />}
-        label={'Spins left: ' + spinsLeft}
-        variant="outlined"
-      />
-      <Button onClick={handleFreeSpin}>
-        Pirkti bileta - paspaudus 29 proc tikimybe kad gales spinint rata
-      </Button>
+      <SpinsLeft>
+        <Chip
+          icon={<LoopIcon />}
+          label={'Spins left: ' + spinsLeft}
+          variant="outlined"
+        />
+      </SpinsLeft>
+      <Item>
+        <Button variant="outlined" onClick={handleFreeSpin}>
+          Pirkti bileta - paspaudus 29 proc tikimybe kad gales spinint rata
+        </Button>
+      </Item>
 
       <Item>
         <Box
@@ -140,9 +149,8 @@ export function Gambling(props: Props) {
             textColors={['#ffffff']}
           />
         </Box>
-
         <Button variant="outlined" onClick={handleSpinClick}>
-          SPIN THAT $HIT
+          SPIN
         </Button>
       </Item>
 
