@@ -14,8 +14,10 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import axios from '../../../axiosConfig';
 
 function Copyright(props: any) {
   return (
@@ -36,14 +38,24 @@ function Copyright(props: any) {
 }
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    axios
+      .post('register', {
+        name: data.get('firstName'),
+        surname: data.get('lastName'),
+        email: data.get('email'),
+        password: data.get('password'),
+      })
+      .then(res => {
+        if (res.status == 201) {
+          navigate('/login');
+        }
+      });
   };
 
   return (
@@ -124,7 +136,7 @@ export default function SignupPage() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

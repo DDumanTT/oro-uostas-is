@@ -11,12 +11,13 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import axios from '../../../axiosConfig';
 
 function Copyright(props: any) {
   return (
@@ -37,14 +38,23 @@ function Copyright(props: any) {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    axios
+      .post('login', {
+        email: data.get('email'),
+        password: data.get('password'),
+      })
+      .then(res => {
+        var { token } = res.data;
+        if (token !== 'false') {
+          navigate('/');
+          localStorage.setItem('jwt_token', token);
+        }
+      });
   };
 
   return (

@@ -16,11 +16,13 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../../../axiosConfig';
 
 interface Props {}
 
 export function AccountMenu(props: Props) {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,6 +31,13 @@ export function AccountMenu(props: Props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const logout = () => {
+    axios.post('logout').then(res => {
+      localStorage.removeItem('jwt_token');
+      navigate('/');
+    });
+  };
+
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -99,7 +108,7 @@ export function AccountMenu(props: Props) {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

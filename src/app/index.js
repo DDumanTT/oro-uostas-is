@@ -26,6 +26,31 @@ import { Container, CssBaseline } from '@mui/material';
 import { Statistics } from './pages/Statistics';
 
 export function App() {
+  const LoggedInRoute = ({ component: Component, ...rest }) => {
+    const token = localStorage.getItem('jwt_token');
+    return (
+      <Route
+        {...rest}
+        element={props =>
+          token ? <Component {...props} /> : <Navigate to="/signup" />
+        }
+      />
+    );
+  };
+
+  const LoggedOutRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      element={props =>
+        localStorage.getItem('jwt_token') ? (
+          <Navigate to="/" />
+        ) : (
+          <Component {...props} />
+        )
+      }
+    />
+  );
+
   const { i18n } = useTranslation();
   return (
     <BrowserRouter>
@@ -39,12 +64,12 @@ export function App() {
       <CssBaseline />
       <GlobalStyle />
       <Routes>
-        <Route
+        <LoggedOutRoute
           path={process.env.PUBLIC_URL + '/login'}
           element={<LoginPage />}
         />
 
-        <Route
+        <LoggedOutRoute
           path={process.env.PUBLIC_URL + '/signup'}
           element={<SignupPage />}
         />

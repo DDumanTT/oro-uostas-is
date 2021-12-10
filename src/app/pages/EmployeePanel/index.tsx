@@ -16,8 +16,9 @@ export function EmployeePanel(props: Props) {
 
   return (
     <Div>
-      {t('')}
-      {/*  {t(...messages.someThing())}  */}
+      Darbuotojų posistemė - darbuotojai gali prisijungti prie darbuotojų
+      sąsajos, kurioje gali pridėti, redaguoti, skrydžius, keisti jų statusą,
+      suteikti nuolaidas ir
     </Div>
   );
 }
