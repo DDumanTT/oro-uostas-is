@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -19,6 +19,15 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Modal,
+  Box,
+  Grid,
+  FormControlLabel,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -30,8 +39,12 @@ import {
   UserListToolbar,
   UserMoreMenu,
 } from '../components/_dashboard/user';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import axios from '../../../../axiosConfig';
+
 //
 import USERLIST from '../_mocks_/user';
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +105,12 @@ export default function User() {
     setOrderBy(property);
   };
 
+  const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const handleSelectAllClick = event => {
     if (event.target.checked) {
       const newSelecteds = USERLIST.map(n => n.name);
@@ -141,7 +160,46 @@ export default function User() {
     filterName,
   );
 
+  const [role, setRole] = useState(2);
+
+  const updateStatus = e => {
+    setRole(e.target.value);
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    // eslint-disable-next-line no-console
+
+    // reik sukurt user su role, paduodamas roles id
+    // axios
+    //   .post('register', {
+    //     name: data.get('firstName'),
+    //     surname: data.get('lastName'),
+    //     email: data.get('email'),
+    //     password: data.get('password'),
+    //     role
+    //   })
+    //   .then(res => {
+    //     if (res.status == 201) {
+    //       navigate('/login');
+    //     }
+    //   });
+  };
+
   const isUserNotFound = filteredUsers.length === 0;
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 4,
+  };
 
   return (
     <Page title="User | Minimal-UI">
@@ -155,14 +213,111 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          {/* <Button
+          <Button
             variant="contained"
             component={RouterLink}
             to="#"
             startIcon={<Icon icon={plusFill} />}
+            onClick={handleOpen}
           >
             New User
-          </Button> */}
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  Add user
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 3 }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="given-name"
+                        name="firstName"
+                        required
+                        fullWidth
+                        id="firstName"
+                        label="First Name"
+                        autoFocus
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="lastName"
+                        label="Last Name"
+                        name="lastName"
+                        autoComplete="family-name"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="new-password"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InputLabel id="status">Role</InputLabel>
+                      <Select
+                        labelId="status"
+                        id="status2"
+                        value={role}
+                        label="Status"
+                        onChange={updateStatus}
+                      >
+                        <MenuItem value={2}>Client</MenuItem>
+                        <MenuItem value={1}>Worker</MenuItem>
+                        <MenuItem value={2}>Client</MenuItem>
+                      </Select>
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3 }}
+                  >
+                    Add user
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Modal>
         </Stack>
 
         <Card>

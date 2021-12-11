@@ -3,7 +3,12 @@
  * AccountMenu
  *
  */
-import { Logout, PersonAdd, Settings } from '@mui/icons-material';
+import {
+  Logout,
+  PersonAdd,
+  Settings,
+  AdminPanelSettings,
+} from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -18,6 +23,7 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../../axiosConfig';
+import { getUser, Roles } from 'user_info';
 
 interface Props {}
 
@@ -43,7 +49,9 @@ export function AccountMenu(props: Props) {
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title="Account settings">
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}>
+              {getUser().name[0].toUpperCase()}
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -81,19 +89,21 @@ export function AccountMenu(props: Props) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={e => navigate('/profile')}>
           <Avatar /> Profile
         </MenuItem>
         <Divider />
-        <MenuItem component={Link} to="/admin">
-          <ListItemIcon>{/* <PersonAdd fontSize="small" /> */}</ListItemIcon>
-          Admin panel
-        </MenuItem>
-        <MenuItem component={Link} to="/employee">
-          <ListItemIcon>{/* <PersonAdd fontSize="small" /> */}</ListItemIcon>
-          Employee Panel
-        </MenuItem>
-        <MenuItem>
+        {getUser().role !== Roles.client && (
+          <MenuItem component={Link} to="/admin">
+            <ListItemIcon>
+              <AdminPanelSettings fontSize="small" />
+            </ListItemIcon>
+            {getUser().role === Roles.admin && 'Admin panel'}
+            {getUser().role === Roles.worker && 'Employee panel'}
+          </MenuItem>
+        )}
+
+        <MenuItem onClick={e => navigate('/settings')}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>

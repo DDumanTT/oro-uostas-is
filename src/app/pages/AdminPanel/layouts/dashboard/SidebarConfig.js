@@ -3,10 +3,7 @@ import pieChart2Fill from '@iconify/icons-eva/pie-chart-2-fill';
 import peopleFill from '@iconify/icons-eva/people-fill';
 import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import fileTextFill from '@iconify/icons-eva/file-text-fill';
-import lockFill from '@iconify/icons-eva/lock-fill';
-import personAddFill from '@iconify/icons-eva/person-add-fill';
-import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
-import { Roles } from 'roles_enum';
+import { getUser, Roles } from 'user_info';
 
 // ----------------------------------------------------------------------
 
@@ -35,8 +32,7 @@ const sidebarConfig = [
   },
 ];
 
-const user = localStorage.getItem('user');
-if (JSON.parse(user)?.role === Roles.worker) {
+if ([Roles.admin, Roles.worker].includes(getUser().role)) {
   sidebarConfig.push({
     title: 'Create flights',
     path: '/employee',

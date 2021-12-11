@@ -12,6 +12,7 @@ import {
   Button,
   FormControl,
   FormHelperText,
+  Grid,
   Input,
   InputLabel,
   MenuItem,
@@ -42,6 +43,10 @@ function InsertFlight(props) {
     setInputData({ ...inputData, [e.target.id]: e.target.value });
   };
 
+  const updateStatus = e => {
+    setInputData({ ...inputData, status: e.target.value });
+  };
+
   const handleInsertFlight = () => {
     console.log(inputData);
     // axios({
@@ -55,99 +60,113 @@ function InsertFlight(props) {
   };
 
   return (
-    <Box
+    <Grid
       component="form"
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
+        '& .MuiTextField-root': { m: 1, width: '100%' },
       }}
+      mt={5}
       noValidate
       autoComplete="off"
+      justifyContent="center"
+      rowSpacing={2}
+      // columnSpacing={4}
+      container
     >
-      <TextField
-        id="flight_code"
-        required
-        label="Flight code"
-        variant="standard"
-        value={inputData.flight_code}
-        onChange={updateField}
-      />
-      <TextField
-        id="departure_location"
-        required
-        label="Departure location"
-        variant="standard"
-        value={inputData.departure_location}
-        onChange={updateField}
-      />
-      <TextField
-        id="arrival_location"
-        required
-        label="Arrival location"
-        variant="standard"
-        value={inputData.arrival_location}
-        onChange={updateField}
-      />
-      <TextField
-        id="status"
-        label="Status"
-        variant="standard"
-        value={inputData.status}
-        onChange={updateField}
-      />
+      <Grid item lg={8} sx={{ display: 'flex' }}>
+        <TextField
+          id="flight_code"
+          required
+          label="Flight code"
+          value={inputData.flight_code}
+          onChange={updateField}
+        />
+        <TextField
+          id="departure_location"
+          required
+          label="Departure location"
+          value={inputData.departure_location}
+          onChange={updateField}
+        />
+        <TextField
+          id="arrival_location"
+          required
+          label="Arrival location"
+          value={inputData.arrival_location}
+          onChange={updateField}
+        />
+      </Grid>
+      <Grid item lg={8} sx={{ display: 'flex' }}>
+        <FormControl fullWidth sx={{ margin: '8px' }}>
+          <InputLabel id="status">Status</InputLabel>
+          <Select
+            labelId="status"
+            id="status2"
+            value={inputData.status}
+            label="Status"
+            onChange={updateStatus}
+          >
+            <MenuItem value={'Active'}>Active</MenuItem>
+            <MenuItem value={'Canceled'}>Canceled</MenuItem>
+            <MenuItem value={'Delayed'}>Delayed</MenuItem>
+            <MenuItem value={'Boarding'}>Boarding</MenuItem>
+          </Select>
+        </FormControl>
 
-      <Select
-        labelId="demo-simple-select-standard-label"
-        id="status"
-        value={inputData.status}
-        label="Status"
-        onChange={updateField}
+        <TextField
+          id="gate"
+          required
+          type="text"
+          label="Gate"
+          value={inputData.gate}
+          onChange={updateField}
+        />
+      </Grid>
+
+      <Grid item lg={8} sx={{ display: 'flex' }}>
+        <TextField
+          id="boarding_time"
+          label="Boarding time"
+          required
+          type="datetime-local"
+          sx={{ width: 250 }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={updateField}
+          value={inputData.boarding_time}
+        />
+        <TextField
+          id="ticket_price"
+          required
+          type="number"
+          label="Ticket price"
+          value={inputData.ticket_price}
+          onChange={updateField}
+        />
+        <TextField
+          id="duration"
+          required
+          label="Duration"
+          type="text"
+          value={inputData.duration}
+          onChange={updateField}
+        />
+      </Grid>
+
+      <Grid
+        item
+        lg={8}
+        display="flex"
+        justifyContent="flex-end"
+        mr={2}
+        height="66px"
       >
-        <MenuItem value={'Active'}>Active</MenuItem>
-        <MenuItem value={'Canceled'}>Canceled</MenuItem>
-        <MenuItem value={'Delayed'}>Delayed</MenuItem>
-        <MenuItem value={'Boarding'}>Boarding</MenuItem>
-      </Select>
-
-      <TextField
-        id="gate"
-        required
-        type="text"
-        label="Gate"
-        variant="standard"
-        value={inputData.gate}
-        onChange={updateField}
-      />
-      <TextField
-        id="boarding_time"
-        required
-        type="date"
-        label="Boarding time"
-        variant="standard"
-        value={inputData.boarding_time}
-        onChange={updateField}
-      />
-      <TextField
-        id="ticket_price"
-        required
-        type="number"
-        label="Ticket price"
-        variant="standard"
-        value={inputData.ticket_price}
-        onChange={updateField}
-      />
-      <TextField
-        id="duration"
-        required
-        label="Duration"
-        type="time"
-        variant="standard"
-        value={inputData.duration}
-        onChange={updateField}
-      />
-      <Button onClick={handleInsertFlight} variant="contained">
-        Add flight
-      </Button>
-    </Box>
+        <Button onClick={handleInsertFlight} variant="contained">
+          Save flight
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 

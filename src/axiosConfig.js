@@ -14,12 +14,4 @@ instance.interceptors.request.use(response => {
   return response;
 });
 
-export const isLogedIn = () => {
-  return localStorage.getItem('jwt_token');
-};
-
-export const getUser = () => {
-  return JSON.parse(localStorage.getItem('user'));
-};
-
 export default instance;

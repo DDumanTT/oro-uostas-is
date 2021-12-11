@@ -27,7 +27,7 @@ import { Gambling } from 'app/pages/Gambling';
 import { HomePage } from 'app/pages/HomePage';
 import { NotFoundPage } from 'app/pages/NotFoundPage';
 import { Statistics } from 'app/pages/Statistics';
-import { isLogedIn } from 'axiosConfig';
+import { isLogedIn } from 'user_info';
 
 export default function NavBar() {
   let location = useLocation();
@@ -50,9 +50,11 @@ export default function NavBar() {
               </Button>
             </Box>
             {/* Nerenderinti jei vartotojas prisijunges */}
-            <Button color="inherit" component={Link} to="/login">
-              Sign in
-            </Button>
+            {!isLogedIn() && (
+              <Button color="inherit" component={Link} to="/login">
+                Sign in
+              </Button>
+            )}
 
             {/* Renderinti jei vartotojas prisijunges */}
             <Button color="inherit" component={Link} to="/gamble">

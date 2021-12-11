@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 
-import { getUser } from 'axiosConfig';
+import { getUser } from 'user_info';
 
 const account = {
   displayName: getUser().name + ' ' + getUser().surname,
