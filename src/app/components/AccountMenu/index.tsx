@@ -84,9 +84,6 @@ export function AccountMenu(props: Props) {
         <MenuItem>
           <Avatar /> Profile
         </MenuItem>
-        <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
         <Divider />
         <MenuItem component={Link} to="/admin">
           <ListItemIcon>{/* <PersonAdd fontSize="small" /> */}</ListItemIcon>
@@ -95,12 +92,6 @@ export function AccountMenu(props: Props) {
         <MenuItem component={Link} to="/employee">
           <ListItemIcon>{/* <PersonAdd fontSize="small" /> */}</ListItemIcon>
           Employee Panel
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
         </MenuItem>
         <MenuItem>
           <ListItemIcon>

@@ -19,45 +19,44 @@ import {
 interface Props {
   flightData: {
     departureTime: string;
-    departureCode: string;
+    departure_code: string;
     arrivalTime: string;
-    arrivalCode: string;
+    arrival_code: string;
     duration: number;
-    date: Date;
-    price: number;
+    boarding_time: Date;
+    ticket_price: number;
     logoPath: string;
   };
 }
 
 export function FlightCard(props: Props) {
   let data = props.flightData;
-  let hours = Math.floor(data.duration / 60);
-  let minutes = data.duration - hours * 60;
+  var datetime = new Date('1970-01-01 ' + data.duration);
   return (
     <StyledCard>
-      <CardTop subheader={data.date.toISOString().substring(0, 10)} />
+      <CardTop subheader={data.boarding_time} />
       <CardContent>
         <StyledInfo>
           <CardElement>
-            <Typography variant="h5">{data.departureCode}</Typography>
+            {/* <Typography variant="h5">{data.departure_code}</Typography> */}
           </CardElement>
           <MiddleElement>
             <Typography variant="h5">
-              {String(hours).padStart(2, '0')}:
-              {String(minutes).padStart(2, '0')}
+              {String(datetime.getHours()).padStart(2, '0')}:
+              {String(datetime.getMinutes()).padStart(2, '0')}
             </Typography>
           </MiddleElement>
           <CardElement>
-            <Typography variant="h5">{data.arrivalCode}</Typography>
+            {/* <Typography variant="h5">{data.arrival_code}</Typography> */}
           </CardElement>
         </StyledInfo>
       </CardContent>
       <CardFooter>
-        <Box sx={{ display: 'flex', flexGrow: 1, height: '5vh' }}>
+        {/* <Box sx={{ display: 'flex', flexGrow: 1, height: '5vh' }}>
           <img width="auto" height="auto" src={data.logoPath} alt="logo" />
-        </Box>
+        </Box> */}
         <Typography variant="h6" sx={{ display: 'flex' }}>
-          €{data.price}
+          €{data.ticket_price}
         </Typography>
         <Button
           variant="contained"

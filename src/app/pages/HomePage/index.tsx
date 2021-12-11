@@ -67,6 +67,9 @@ export function HomePage() {
                 //                to={'/from:' + from + '/to:' + to}
                 variant="contained"
                 sx={{ width: '100%', height: '56px' }}
+                component={Link}
+                to="/search"
+                state={{ from: from, to: to }}
               >
                 Search
               </Button>

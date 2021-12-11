@@ -66,25 +66,25 @@ export function App() {
           />
         </Route>
 
-        <Route element={<Authorized />}>
-          <Route
-            path={process.env.PUBLIC_URL + '/dashboard/*'}
-            element={<AdminPanel />}
-          />
-          <Route
-            path={process.env.PUBLIC_URL + '/admin'}
-            element={<Navigate to="/dashboard/app" replace />}
-          />
-        </Route>
+        {/* <Route element={<Authorized />}> */}
+        <Route
+          path={process.env.PUBLIC_URL + '/dashboard/*'}
+          element={<AdminPanel />}
+        />
+        <Route
+          path={process.env.PUBLIC_URL + '/admin'}
+          element={<Navigate to="/dashboard/app" replace />}
+        />
+        {/* </Route> */}
 
         <Route path="/" element={<NavBar />}>
           <Route path="" element={<HomePage />} />
-          <Route path={'from::from/to::to'} element={<SearchPage />} />
-          <Route element={<Authorized />}>
-            <Route path={'gamble'} element={<Gambling />} />
-            <Route path={'statistics'} element={<Statistics />} />
-            <Route path={'employee'} element={<EmployeePanel />} />
-          </Route>
+          <Route path={'search'} element={<SearchPage />} />
+          {/* <Route element={<Authorized />}> */}
+          <Route path={'gamble'} element={<Gambling />} />
+          <Route path={'statistics'} element={<Statistics />} />
+          <Route path={'employee'} element={<EmployeePanel />} />
+          {/* </Route> */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

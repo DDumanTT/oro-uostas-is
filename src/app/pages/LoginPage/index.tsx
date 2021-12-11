@@ -49,10 +49,11 @@ export default function LoginPage() {
         password: data.get('password'),
       })
       .then(res => {
-        var { token } = res.data;
-        if (token !== 'false') {
+        var { access_token, user } = res.data;
+        if (access_token) {
+          localStorage.setItem('jwt_token', access_token);
+          localStorage.setItem('user', JSON.stringify(user));
           navigate('/');
-          localStorage.setItem('jwt_token', token);
         }
       });
   };

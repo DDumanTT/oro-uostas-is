@@ -6,6 +6,7 @@ import fileTextFill from '@iconify/icons-eva/file-text-fill';
 import lockFill from '@iconify/icons-eva/lock-fill';
 import personAddFill from '@iconify/icons-eva/person-add-fill';
 import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
+import { Roles } from 'roles_enum';
 
 // ----------------------------------------------------------------------
 
@@ -32,21 +33,15 @@ const sidebarConfig = [
     path: '/dashboard/blog',
     icon: getIcon(fileTextFill),
   },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon(lockFill),
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon(alertTriangleFill),
-  },
 ];
+
+const user = localStorage.getItem('user');
+if (JSON.parse(user)?.role === Roles.worker) {
+  sidebarConfig.push({
+    title: 'Create flights',
+    path: '/employee',
+    icon: getIcon('fa-solid:plane-departure'),
+  });
+}
 
 export default sidebarConfig;

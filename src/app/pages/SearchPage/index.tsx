@@ -16,12 +16,13 @@ import {
   Button,
   Grid,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { FlightCard } from './components/FlightCard';
 import { FiltersPanel } from './components/FiltersPanel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StringDecoder } from 'string_decoder';
+import axios from '../../../axiosConfig';
 
 const flights = [
   {
@@ -62,7 +63,24 @@ interface Props {
 }
 
 export function SearchPage() {
-  let { from, to } = useParams<any>();
+  const location = useLocation();
+  // let { from, to } = useParams<any>();
+  const [flights, setFlights] = useState([]);
+  const { from, to } = location.state;
+
+  useEffect(() => {
+    axios
+      .get('flights/search', {
+        params: {
+          from,
+          to,
+        },
+      })
+      .then(res => {
+        console.log(res);
+        setFlights(res.data);
+      });
+  }, []);
 
   return (
     <MainContainer container spacing={2}>
