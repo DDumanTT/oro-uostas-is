@@ -8,7 +8,13 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  Navigate,
+  BrowserRouter,
+  Outlet,
+} from 'react-router-dom';
 
 import { GlobalStyle } from '../styles/global-styles';
 
@@ -26,30 +32,15 @@ import { Container, CssBaseline } from '@mui/material';
 import { Statistics } from './pages/Statistics';
 
 export function App() {
-  const LoggedInRoute = ({ component: Component, ...rest }) => {
+  const Authorized = () => {
     const token = localStorage.getItem('jwt_token');
-    return (
-      <Route
-        {...rest}
-        element={props =>
-          token ? <Component {...props} /> : <Navigate to="/signup" />
-        }
-      />
-    );
+    return token ? <Outlet /> : <Navigate to="/login" />;
   };
 
-  const LoggedOutRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      element={props =>
-        localStorage.getItem('jwt_token') ? (
-          <Navigate to="/" />
-        ) : (
-          <Component {...props} />
-        )
-      }
-    />
-  );
+  const Unauthorized = () => {
+    const token = localStorage.getItem('jwt_token');
+    return !token ? <Outlet /> : <Navigate to="/" />;
+  };
 
   const { i18n } = useTranslation();
   return (
@@ -64,33 +55,36 @@ export function App() {
       <CssBaseline />
       <GlobalStyle />
       <Routes>
-        <LoggedOutRoute
-          path={process.env.PUBLIC_URL + '/login'}
-          element={<LoginPage />}
-        />
+        <Route element={<Unauthorized />}>
+          <Route
+            path={process.env.PUBLIC_URL + '/login'}
+            element={<LoginPage />}
+          />
+          <Route
+            path={process.env.PUBLIC_URL + '/signup'}
+            element={<SignupPage />}
+          />
+        </Route>
 
-        <LoggedOutRoute
-          path={process.env.PUBLIC_URL + '/signup'}
-          element={<SignupPage />}
-        />
-        <Route
-          path={process.env.PUBLIC_URL + '/dashboard/*'}
-          element={<AdminPanel />}
-        />
-        <Route
-          path={process.env.PUBLIC_URL + '/admin'}
-          element={<Navigate to="/dashboard/app" replace />}
-        />
-        <Route
-          path={process.env.PUBLIC_URL + '/employee'}
-          element={<EmployeePanel />}
-        />
+        <Route element={<Authorized />}>
+          <Route
+            path={process.env.PUBLIC_URL + '/dashboard/*'}
+            element={<AdminPanel />}
+          />
+          <Route
+            path={process.env.PUBLIC_URL + '/admin'}
+            element={<Navigate to="/dashboard/app" replace />}
+          />
+        </Route>
 
         <Route path="/" element={<NavBar />}>
           <Route path="" element={<HomePage />} />
           <Route path={'from::from/to::to'} element={<SearchPage />} />
-          <Route path={'gamble'} element={<Gambling />} />
-          <Route path={'statistics'} element={<Statistics />} />
+          <Route element={<Authorized />}>
+            <Route path={'gamble'} element={<Gambling />} />
+            <Route path={'statistics'} element={<Statistics />} />
+            <Route path={'employee'} element={<EmployeePanel />} />
+          </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
