@@ -15,6 +15,9 @@ import {
   CardActions,
   Button,
   Grid,
+  AlertColor,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { useParams, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -63,9 +66,35 @@ interface Props {
 }
 
 export function SearchPage() {
+  const handeSnackBarSuccess = () => {
+    setSnackBar({
+      severity: 'success',
+      message: 'Flight was booked successfully',
+    });
+    setSnackBarState({ ...snackBarState, open: true });
+  };
+
+  const handleSnackBarClose = () => {
+    setSnackBarState({ ...snackBarState, open: false });
+  };
+
   const location = useLocation();
   // let { from, to } = useParams<any>();
   const [flights, setFlights] = useState([]);
+  const [snackBarState, setSnackBarState] = React.useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'right',
+  });
+  const [snackBar, setSnackBar] = React.useState<{
+    severity: AlertColor;
+    message: string;
+  }>({
+    severity: 'info',
+    message: '',
+  });
+  const { vertical, horizontal, open }: any = snackBarState;
+
   const { from, to } = location.state;
 
   useEffect(() => {
@@ -78,12 +107,26 @@ export function SearchPage() {
       })
       .then(res => {
         console.log(res);
-        setFlights(res.data);
+        setFlights(res.data.flights);
       });
   }, []);
 
   return (
     <MainContainer container spacing={2}>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={snackBarState.open}
+        autoHideDuration={6000}
+        onClose={handleSnackBarClose}
+      >
+        <Alert
+          onClose={handleSnackBarClose}
+          severity={snackBar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackBar.message}
+        </Alert>
+      </Snackbar>
       <FiltersPanel />
       <Grid item sm={12} md={8}>
         <Typography variant="h5">
@@ -91,7 +134,13 @@ export function SearchPage() {
         </Typography>
         <Stack>
           {flights.map((item, key) => {
-            return <FlightCard flightData={item} key={key} />;
+            return (
+              <FlightCard
+                flightData={item}
+                key={key}
+                snackbar={handeSnackBarSuccess}
+              />
+            );
           })}
         </Stack>
       </Grid>
