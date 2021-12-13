@@ -33,6 +33,7 @@ import { Statistics } from './pages/Statistics';
 import { getUser, Roles } from 'user_info';
 import { SettingsPage } from './pages/SettingsPage';
 import { ProfilePage } from './pages/ProfilePage';
+import AddPlanePage from './pages/AddPlanePage';
 
 export function App() {
   const Authorized = ({ roles }) => {
@@ -98,6 +99,7 @@ export function App() {
           <Route path={'employee'} element={<EmployeePanel />} />
           <Route path={'settings'} element={<SettingsPage />} />
           <Route path={'profile'} element={<ProfilePage />} />
+          <Route path={'addplane'} element={<AddPlanePage />} />
           {/* </Route> */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>

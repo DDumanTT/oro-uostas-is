@@ -29,23 +29,23 @@ export default function AppConversionRates() {
     },
     xaxis: {
       categories: [
-        'Italy',
-        'Japan',
-        'China',
-        'Canada',
-        'France',
-        'Germany',
-        'South Korea',
-        'Netherlands',
-        'United States',
-        'United Kingdom',
+        'January',
+        'February',
+        'March',
+        'April',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
       ],
     },
   });
 
   return (
     <Card>
-      <CardHeader title="Conversion Rates" subheader="(+43%) than last year" />
+      <CardHeader title="Total earnings" subheader="Earnings 2020-2021" />
       <Box sx={{ mx: 3 }} dir="ltr">
         <ReactApexChart
           type="bar"

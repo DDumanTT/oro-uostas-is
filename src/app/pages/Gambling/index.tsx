@@ -9,11 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { messages } from './messages';
 import { styled } from '@mui/material/styles';
 import { Wheel } from 'react-custom-roulette';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoopIcon from '@mui/icons-material/Loop';
 import MuiAlert, { AlertColor, AlertProps } from '@mui/material/Alert';
 import { Data } from 'dataclass';
 import { SnackbarOrigin } from '@mui/material/Snackbar';
+import { getUser } from 'user_info';
 
 interface Props {}
 
@@ -72,6 +73,10 @@ export function Gambling(props: Props) {
     message: '',
   });
   const { vertical, horizontal, open } = snackBarState;
+
+  useEffect(() => {
+    setSpinsLeft(getUser().tickets);
+  }, []);
 
   const handleFreeSpin = () => {
     const fromZeroToHundred = Math.floor(Math.random() * 100);

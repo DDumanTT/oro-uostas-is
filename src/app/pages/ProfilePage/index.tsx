@@ -1,8 +1,11 @@
 import {
+  Alert,
+  AlertColor,
   Avatar,
   Button,
   FormControlLabel,
   Grid,
+  Snackbar,
   Stack,
   Switch,
   Typography,
@@ -18,15 +21,51 @@ export function ProfilePage() {
   const [flights, setFlights] = React.useState([]);
 
   //  reik gaut vartotoju nupirktus skrydzius ir sumest i flights
-  //   React.useEffect(() => {
-  //     axios.get('flights/search').then(res => {
-  //       console.log(res);
-  //       setFlights(res.data);
-  //     });
-  //   }, []);
+  React.useEffect(() => {
+    axios.get('/bookings').then(res => {
+      console.log(res);
+      setFlights(res.data.flights);
+    });
+  }, []);
+
+  const handeSnackBarError = () => {
+    setSnackBar({ severity: 'error', message: 'Flight was canceled' });
+    setSnackBarState({ ...snackBarState, open: true });
+  };
+
+  const [snackBarState, setSnackBarState] = React.useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'right',
+  });
+  const [snackBar, setSnackBar] = React.useState<{
+    severity: AlertColor;
+    message: string;
+  }>({
+    severity: 'info',
+    message: '',
+  });
+  const { vertical, horizontal, open }: any = snackBarState;
+  const handleSnackBarClose = () => {
+    setSnackBarState({ ...snackBarState, open: false });
+  };
 
   return (
     <Grid item lg={8} sx={{ margin: '0 auto' }}>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={snackBarState.open}
+        autoHideDuration={6000}
+        onClose={handleSnackBarClose}
+      >
+        <Alert
+          onClose={handleSnackBarClose}
+          severity={snackBar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackBar.message}
+        </Alert>
+      </Snackbar>
       <Typography variant="h5" mt={4}>
         Profile page
       </Typography>
@@ -71,7 +110,14 @@ export function ProfilePage() {
       <Stack>
         {/* Reik pridet mygtuka kad atsaukt skrydi */}
         {flights.map((item, key) => {
-          return <FlightCard flightData={item} key={key} />;
+          return (
+            <FlightCard
+              flightData={item}
+              key={key}
+              delete={true}
+              snackbar={handeSnackBarError}
+            />
+          );
         })}
       </Stack>
       <br />

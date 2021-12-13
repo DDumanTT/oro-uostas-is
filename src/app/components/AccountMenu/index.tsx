@@ -38,10 +38,14 @@ export function AccountMenu(props: Props) {
     setAnchorEl(null);
   };
   const logout = () => {
-    axios.post('logout').then(res => {
-      localStorage.removeItem('jwt_token');
-      navigate('/');
-    });
+    axios
+      .post('logout')
+      .then(res => {})
+      .finally(() => {
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('user');
+        navigate('/');
+      });
   };
 
   return (

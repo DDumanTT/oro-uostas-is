@@ -12,10 +12,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import axios from '../../../../../../axiosConfig';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu() {
+export default function UserMoreMenu(props) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,7 +36,10 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem
+          sx={{ color: 'text.secondary' }}
+          onClick={e => props.onClick(props.id)}
+        >
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
@@ -45,7 +49,7 @@ export default function UserMoreMenu() {
           />
         </MenuItem>
 
-        <MenuItem
+        {/* <MenuItem
           component={RouterLink}
           to="#"
           sx={{ color: 'text.secondary' }}
@@ -57,7 +61,7 @@ export default function UserMoreMenu() {
             primary="Edit"
             primaryTypographyProps={{ variant: 'body2' }}
           />
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </>
   );

@@ -50,11 +50,12 @@ import { Link } from 'react-router-dom';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'arrival_location', label: 'Arrival location', alignRight: false },
+  { id: 'departure_location', label: 'Departure location', alignRight: false },
+  { id: 'flight_code', label: 'Flight code', alignRight: false },
+  { id: 'gate', label: 'Gate', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
+  { id: 'ticket_price', label: 'Price', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -98,19 +99,22 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users, setUsers] = useState([]);
+  const [flights, setFlights] = useState([]);
 
   const statusas = new Map([
     [0, 'Active'],
-    [1, 'Banned'],
+    [1, 'Canceled'],
+    [2, 'Delayed'],
+    [3, 'Boarding'],
   ]);
 
   useEffect(() => {
     axios
-      .get('dashboard/user')
+      .get('flights')
       .then(resp => {
         // handle success
-        setUsers(resp.data);
+        console.log(resp.data);
+        setFlights(resp.data);
       })
       .catch(function (error) {
         // handle error
@@ -132,7 +136,7 @@ export default function User() {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = users.map(n => n.name);
+      const newSelecteds = flights.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -171,88 +175,42 @@ export default function User() {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - flights.length) : 0;
 
   const filteredUsers = applySortFilter(
-    users,
+    flights,
     getComparator(order, orderBy),
     filterName,
   );
 
-  const [role, setRole] = useState(2);
+  const [role, setRole] = useState(0);
 
   const updateStatus = (e, id) => {
-    // setRole(e.target.value);
-    console.log('User' + id);
-    console.log('Role:' + e.target.value);
-
-    axios.post('change_status', {
+    console.log({
       id,
       status: e.target.value,
     });
 
     axios
-      .get('dashboard/user')
-      .then(resp => {
-        setUsers(resp.data);
-      })
-      .catch(function (error) {
-        setUsers([]);
-        console.log(error);
-      });
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      name: data.get('firstName'),
-      surname: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-      role: data.get('role'),
-    });
-
-    axios.post('register', {
-      name: data.get('firstName'),
-      surname: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-      role: data.get('role'),
-    });
-    // Email
-    axios
-      .get('dashboard/user')
-      .then(resp => {
-        setUsers(resp.data);
-      })
-      .catch(function (error) {
-        setUsers([]);
-        console.log(error);
-      });
-
-    handleClose();
-  };
-
-  const handleDelete = id => {
-    axios
-      .post('/user/delete', {
+      .post('/dashboard/flights', {
         id,
+        status: e.target.value,
       })
-      .finally(() => {
-        axios
-          .get('dashboard/user')
-          .then(resp => {
-            // handle success
-            setUsers(resp.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          });
+      .then(res => {
+        console.log(res);
+      })
+      .catch(e => {
+        console.log(e);
       });
-    // refreshint parenta reiketu kazkaip
+
+    axios
+      .get('flights')
+      .then(resp => {
+        setFlights(resp.data);
+      })
+      .catch(function (error) {
+        setFlights([]);
+      });
   };
 
   const isUserNotFound = filteredUsers.length === 0;
@@ -272,132 +230,12 @@ export default function User() {
   return (
     <Page title="User | Minimal-UI">
       <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={5}
-        >
-          <Typography variant="h4" gutterBottom>
-            User
-          </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="#"
-            startIcon={<Icon icon={plusFill} />}
-            onClick={handleOpen}
-          >
-            New User
-          </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <Avatar sx={{ width: 32, height: 32 }}>
-                  <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                  Add user
-                </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{ mt: 3 }}
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        autoComplete="given-name"
-                        name="firstName"
-                        required
-                        fullWidth
-                        id="firstName"
-                        label="First Name"
-                        autoFocus
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        required
-                        fullWidth
-                        id="lastName"
-                        label="Last Name"
-                        name="lastName"
-                        autoComplete="family-name"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="new-password"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <InputLabel id="status">Role</InputLabel>
-                      <Select
-                        labelId="status"
-                        id="status2"
-                        value={role}
-                        label="Status"
-                        name="role"
-                        onChange={e => {
-                          setRole(e.target.value);
-                        }}
-                      >
-                        <MenuItem value={0}>Admin</MenuItem>
-                        <MenuItem value={1}>Worker</MenuItem>
-                        <MenuItem value={2}>Client</MenuItem>
-                      </Select>
-                    </Grid>
-                  </Grid>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3 }}
-                  >
-                    Add user
-                  </Button>
-                </Box>
-              </Box>
-            </Box>
-          </Modal>
-        </Stack>
-
         <Card>
           <UserListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
           />
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -405,7 +243,7 @@ export default function User() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={users.length}
+                  rowCount={flights.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -416,14 +254,14 @@ export default function User() {
                     .map(row => {
                       const {
                         id,
-                        name,
-                        role,
+                        arrival_location,
+                        departure_location,
+                        flight_code,
                         status,
-                        email,
-                        avatarUrl,
-                        isVerified,
+                        gate,
+                        ticket_price,
                       } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
+                      const isItemSelected = selected.indexOf(id) !== -1;
 
                       return (
                         <TableRow
@@ -434,28 +272,15 @@ export default function User() {
                           selected={isItemSelected}
                           aria-checked={isItemSelected}
                         >
-                          <TableCell padding="checkbox">
-                            {/* <Checkbox
-                              checked={isItemSelected}
-                              onChange={event => handleClick(event, name)}
-                            /> */}
-                          </TableCell>
+                          <TableCell padding="checkbox"></TableCell>
                           <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                            >
-                              <Avatar sx={{ width: 32, height: 32 }}>
-                                {name[0].toUpperCase()}
-                              </Avatar>
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
+                            {arrival_location}
                           </TableCell>
-                          <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{Roles[role]}</TableCell>
+                          <TableCell align="left">
+                            {departure_location}
+                          </TableCell>
+                          <TableCell align="left">{flight_code}</TableCell>
+                          <TableCell align="left">{gate}</TableCell>
                           <TableCell align="left">
                             <Select
                               labelId="status"
@@ -464,12 +289,12 @@ export default function User() {
                               onChange={e => updateStatus(e, id)}
                             >
                               <MenuItem value={0}>Active</MenuItem>
-                              <MenuItem value={1}>Banned</MenuItem>
+                              <MenuItem value={1}>Canceled</MenuItem>
+                              <MenuItem value={2}>Delayed</MenuItem>
+                              <MenuItem value={3}>Boarding</MenuItem>
                             </Select>
                           </TableCell>
-                          <TableCell align="right">
-                            <UserMoreMenu id={id} onClick={handleDelete} />
-                          </TableCell>
+                          <TableCell align="left">€{ticket_price}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -495,7 +320,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={users.length}
+            count={flights.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

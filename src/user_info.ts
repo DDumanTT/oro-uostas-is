@@ -15,6 +15,7 @@ interface User {
   two_factor_recovery_codes: null;
   two_factor_secret: null;
   updated_at: string;
+  tickets: number;
 }
 
 export const isLogedIn = (): string | null => {
@@ -22,5 +23,5 @@ export const isLogedIn = (): string | null => {
 };
 
 export const getUser = (): User => {
-  return JSON.parse(localStorage.getItem('user') ?? '');
+  return JSON.parse(localStorage.getItem('user') ?? '[]');
 };

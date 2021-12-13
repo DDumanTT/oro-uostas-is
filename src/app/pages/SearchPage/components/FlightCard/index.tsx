@@ -14,31 +14,80 @@ import {
   CardHeader,
   CardActions,
   Button,
+  Modal,
 } from '@mui/material';
+import axios from '../../../../../axiosConfig';
+import { getUser } from 'user_info';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   flightData: {
     departureTime: string;
-    departure_code: string;
+    departure_location: string;
     arrivalTime: string;
-    arrival_code: string;
+    arrival_location: string;
     duration: number;
     boarding_time: Date;
     ticket_price: number;
     logoPath: string;
   };
+  delete?: boolean;
+  snackbar?: any;
 }
 
 export function FlightCard(props: Props) {
-  let data = props.flightData;
+  let data: any = props.flightData;
   var datetime = new Date('1970-01-01 ' + data.duration);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const style: any = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const handleBookCancel = () => {
+    axios
+      .post('/bookings/delete', {
+        flight_id: data.id,
+      })
+      .then(res => {
+        console.log(data.id);
+
+        //toast notification
+        window.location.reload();
+        console.log(res);
+      });
+  };
+
+  const handleBookFlight = () => {
+    axios
+      .post('/bookings/insert', {
+        user_id: getUser().id,
+        flight_id: data.id,
+      })
+      .then(res => {
+        //toast notification
+        console.log(res);
+        props.snackbar();
+      });
+  };
+
   return (
     <StyledCard>
       <CardTop subheader={data.boarding_time} />
       <CardContent>
         <StyledInfo>
           <CardElement>
-            {/* <Typography variant="h5">{data.departure_code}</Typography> */}
+            <Typography variant="h5">{data.departure_location}</Typography>
           </CardElement>
           <MiddleElement>
             <Typography variant="h5">
@@ -47,7 +96,7 @@ export function FlightCard(props: Props) {
             </Typography>
           </MiddleElement>
           <CardElement>
-            {/* <Typography variant="h5">{data.arrival_code}</Typography> */}
+            <Typography variant="h5">{data.arrival_location}</Typography>
           </CardElement>
         </StyledInfo>
       </CardContent>
@@ -58,13 +107,62 @@ export function FlightCard(props: Props) {
         <Typography variant="h6" sx={{ display: 'flex' }}>
           €{data.ticket_price}
         </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          sx={{ marginLeft: '15px', display: 'flex' }}
+        {props.delete ? (
+          <Button
+            variant="contained"
+            size="large"
+            color="error"
+            sx={{ marginLeft: '15px', display: 'flex' }}
+            onClick={() => {
+              handleOpen();
+            }}
+          >
+            Cancel
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ marginLeft: '15px', display: 'flex' }}
+            onClick={() => {
+              handleOpen();
+            }}
+          >
+            Book
+          </Button>
+        )}
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          Book
-        </Button>
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Are you sure ?
+            </Typography>
+            {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              This is irreversible action resulting in permanent deletion of
+              account.
+            </Typography> */}
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                if (props.delete) {
+                  handleBookCancel();
+                } else {
+                  handleBookFlight();
+                }
+                handleClose();
+              }}
+              sx={{ marginTop: 5 }}
+            >
+              Confirm
+            </Button>
+          </Box>
+        </Modal>
       </CardFooter>
     </StyledCard>
   );

@@ -34,9 +34,21 @@ const sidebarConfig = [
 
 if ([Roles.admin, Roles.worker].includes(getUser().role)) {
   sidebarConfig.push({
-    title: 'Create flights',
+    title: 'Create flight',
     path: '/employee',
     icon: getIcon('fa-solid:plane-departure'),
+  });
+
+  sidebarConfig.push({
+    title: 'Update flight status',
+    path: '/dashboard/flights',
+    icon: getIcon('bx:bxs-message-rounded-edit'),
+  });
+
+  sidebarConfig.push({
+    title: 'Add plane',
+    path: '/addplane',
+    icon: getIcon('clarity:plane-solid'),
   });
 }
 

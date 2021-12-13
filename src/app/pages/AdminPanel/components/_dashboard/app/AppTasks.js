@@ -9,17 +9,13 @@ import {
   Typography,
   FormControlLabel,
   Stack,
+  Grid,
+  TextField,
+  Button,
 } from '@mui/material';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
-
-const TASKS = [
-  'Find the location of Zenius',
-  'Call joe on skype',
-  'Create website',
-  'Invest in bitconnect',
-  'Order pizza',
-];
 
 // ----------------------------------------------------------------------
 
@@ -62,6 +58,15 @@ function TaskItem({ task, checked, formik, ...other }) {
 }
 
 export default function AppTasks() {
+  const [TASKS, addTask] = useState([
+    'Find the location of Zenius',
+    'Call joe on skype',
+    'Create website',
+    'Invest in bitconnect',
+    'Order pizza',
+  ]);
+  const [newTask, setNewTask] = useState('');
+
   const formik = useFormik({
     initialValues: {
       checked: [TASKS[2]],
@@ -71,11 +76,17 @@ export default function AppTasks() {
     },
   });
 
+  const addEvent = e => {
+    e.preventDefault();
+    addTask([...TASKS, newTask]);
+    setNewTask('');
+  };
+
   const { values, handleSubmit } = formik;
 
   return (
     <Card>
-      <CardHeader title="Tasks" />
+      <CardHeader title="Events" />
       <Box sx={{ px: 3, py: 1 }}>
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -90,6 +101,36 @@ export default function AppTasks() {
           </Form>
         </FormikProvider>
       </Box>
+      <Grid
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '100%' },
+        }}
+        noValidate
+        autoComplete="off"
+        display="flex"
+      >
+        {/* <Grid item lg={8} sx={{ display: 'flex' }}> */}
+        <TextField
+          id="flight_code"
+          required
+          label="New event"
+          value={newTask}
+          onChange={e => setNewTask(e.target.value)}
+        />
+        {/* </Grid> */}
+        <Grid
+          item
+          lg={4}
+          display="flex"
+          justifyContent="flex-end"
+          mr={2}
+          height="66px"
+        >
+          <Button onClick={addEvent} variant="contained" sx={{ margin: '7px' }}>
+            Add event
+          </Button>
+        </Grid>
+      </Grid>
     </Card>
   );
 }

@@ -68,7 +68,7 @@ function SiteItem({ site }) {
 export default function AppTrafficBySite() {
   return (
     <Card>
-      <CardHeader title="Traffic by Site" />
+      <CardHeader title="User interests" />
       <CardContent>
         <Grid container spacing={2}>
           {SOCIALS.map(site => (

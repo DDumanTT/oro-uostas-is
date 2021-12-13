@@ -3,8 +3,12 @@
 import { getUser } from 'user_info';
 
 const account = {
-  displayName: getUser().name + ' ' + getUser().surname,
-  email: 'demo@minimals.cc',
+  get displayName() {
+    return getUser().name + ' ' + getUser().surname;
+  },
+  get email() {
+    return getUser().email;
+  },
   photoURL: '/static/mock-images/avatars/avatar_default.jpg',
 };
 

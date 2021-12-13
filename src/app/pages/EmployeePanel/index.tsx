@@ -10,6 +10,9 @@ import { messages } from './messages';
 import {
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   FormControl,
   FormHelperText,
   Grid,
@@ -17,26 +20,83 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Table,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TableBody,
+  Paper,
 } from '@mui/material';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
-import axios from 'axios';
+import axios from '../../../axiosConfig';
+import { useNavigate } from 'react-router-dom';
 
-function ShowFlights(props) {}
+enum Status {
+  Active,
+  Cancelled,
+  Delayed,
+  Boarding,
+}
+
+function ShowPlanes({ planes = [] }) {
+  return (
+    <Grid
+      display="flex"
+      justifyContent="center"
+      md={8}
+      sx={{ margin: '0 auto' }}
+    >
+      <TableContainer component={Paper} sx={{ marginTop: 3 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell align="right">Plane name</TableCell>
+              <TableCell align="right">Model</TableCell>
+              <TableCell align="right">Total seats</TableCell>
+              <TableCell align="right">Max speeds</TableCell>
+              <TableCell align="right">Manufacturer</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {planes.map((plane: any) => (
+              <TableRow
+                key={plane.id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell>{plane.id}</TableCell>
+                <TableCell align="right">{plane.manufacturer}</TableCell>
+                <TableCell align="right">{plane.plane_name}</TableCell>
+                <TableCell align="right">{plane.model}</TableCell>
+                <TableCell align="right">{plane.total_seats}</TableCell>
+                <TableCell align="right">{plane.max_speed}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Grid>
+  );
+}
 
 function EditFlights(props) {}
 
 function InsertFlight(props) {
   const endpoint = 'flights/insert';
+  const navigate = useNavigate();
   const [inputData, setInputData] = useState({
     flight_code: '',
     departure_location: '',
     arrival_location: '',
-    status: 'Active',
+    status: 0,
     gate: '',
     boarding_time: '',
     ticket_price: '',
     duration: '',
+    plane_id: '',
   });
 
   const updateField = e => {
@@ -49,14 +109,15 @@ function InsertFlight(props) {
 
   const handleInsertFlight = () => {
     console.log(inputData);
-    // axios({
-    //   method: 'post',
-    //   url: endpoint,
-    //   data: {
-    //     firstName: 'Fred',
-    //     lastName: 'Flintstone',
-    //   },
-    // });
+    axios
+      .post('/flights/insert', inputData)
+      .then(res => {
+        console.log(res);
+        navigate('/admin');
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
   return (
@@ -106,10 +167,10 @@ function InsertFlight(props) {
             label="Status"
             onChange={updateStatus}
           >
-            <MenuItem value={'Active'}>Active</MenuItem>
-            <MenuItem value={'Canceled'}>Canceled</MenuItem>
-            <MenuItem value={'Delayed'}>Delayed</MenuItem>
-            <MenuItem value={'Boarding'}>Boarding</MenuItem>
+            <MenuItem value={0}>Active</MenuItem>
+            <MenuItem value={1}>Canceled</MenuItem>
+            <MenuItem value={2}>Delayed</MenuItem>
+            <MenuItem value={3}>Boarding</MenuItem>
           </Select>
         </FormControl>
 
@@ -147,9 +208,17 @@ function InsertFlight(props) {
         <TextField
           id="duration"
           required
+          // type="time"
           label="Duration"
-          type="text"
           value={inputData.duration}
+          onChange={updateField}
+        />
+        <TextField
+          id="plane_id"
+          required
+          label="Plane id"
+          type="text"
+          value={inputData.plane_id}
           onChange={updateField}
         />
       </Grid>
@@ -174,6 +243,14 @@ interface Props {}
 
 export function EmployeePanel(props: Props) {
   const [flights, setFlights] = useState([]);
+  const [planes, setPlanes] = useState([]);
+
+  React.useEffect(() => {
+    axios.get('/planes').then(res => {
+      setPlanes(res.data);
+      console.log(res.data);
+    });
+  }, []);
 
   return (
     <Box>
@@ -183,7 +260,7 @@ export function EmployeePanel(props: Props) {
       {/* Darbuotojų posistemė - darbuotojai gali prisijungti prie darbuotojų
       sąsajos, kurioje gali pridėti, redaguoti, skrydžius, keisti jų statusą,
       suteikti nuolaidas ir */}
-
+      <ShowPlanes planes={planes} />
       <InsertFlight />
     </Box>
   );

@@ -39,6 +39,7 @@ function Copyright(props: any) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [err, setErr] = React.useState(false);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -54,7 +55,13 @@ export default function LoginPage() {
           localStorage.setItem('jwt_token', access_token);
           localStorage.setItem('user', JSON.stringify(user));
           navigate('/');
+          window.location.reload();
+        } else {
+          setErr(true);
         }
+      })
+      .catch(() => {
+        setErr(true);
       });
   };
 
@@ -94,6 +101,8 @@ export default function LoginPage() {
             type="password"
             id="password"
             autoComplete="current-password"
+            error={err}
+            helperText={err && 'Incorrect password.'}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
