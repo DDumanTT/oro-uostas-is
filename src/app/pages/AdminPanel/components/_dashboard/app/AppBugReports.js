@@ -4,6 +4,8 @@ import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
+import { useEffect, useState } from 'react';
+import axios from '../../../../../../axiosConfig';
 
 // ----------------------------------------------------------------------
 
@@ -36,14 +38,20 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 const TOTAL = 234;
 
 export default function AppBugReports() {
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    axios.get('/stats').then(res => {
+      setTotal(res.data.total_spins);
+    });
+  }, []);
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon="fa-solid:medal" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(total)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Total winners
+        Lucky people
       </Typography>
     </RootStyle>
   );

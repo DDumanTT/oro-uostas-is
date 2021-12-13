@@ -15,6 +15,7 @@ import MuiAlert, { AlertColor, AlertProps } from '@mui/material/Alert';
 import { Data } from 'dataclass';
 import { SnackbarOrigin } from '@mui/material/Snackbar';
 import { getUser } from 'user_info';
+import axios from '../../../axiosConfig';
 
 interface Props {}
 
@@ -34,14 +35,14 @@ const SpinsLeft = styled(Box)`
 `;
 
 const data = [
-  { option: '$$$' },
-  { option: '$$$' },
-  { option: '$$$' },
-  { option: '$$$' },
-  { option: '$$$' },
-  { option: '$$$' },
-  { option: 'Skrydis' },
-  { option: '$$$' },
+  { option: 'Nieko 😥' },
+  { option: 'Nieko 😥' },
+  { option: '10' },
+  { option: 'Nieko 😥' },
+  { option: 'Nieko 😥' },
+  { option: 'Nieko 😥' },
+  { option: 'SKRYDIS' },
+  { option: 'Nieko 😥' },
 ];
 
 const backgroundColors = ['#3e3e3e', '#df3428'];
@@ -60,6 +61,7 @@ export function Gambling(props: Props) {
   const [isSpinning, setIsSpinning] = useState(false); // Boolas ar leidzia sukti rata
   const [prizeNumber, setPrizeNumber] = useState(0); // Skaicius, kuri issuka spineris
   const [spinsLeft, setSpinsLeft] = useState(0); // Gauti spins left is duombazes
+  const [rigged, setRigged] = useState(false); // :)
   const [snackBarState, setSnackBarState] = React.useState<State>({
     open: false,
     vertical: 'top',
@@ -74,25 +76,44 @@ export function Gambling(props: Props) {
   });
   const { vertical, horizontal, open } = snackBarState;
 
-  useEffect(() => {
-    setSpinsLeft(getUser().tickets);
-  }, []);
+  const handleKeyPress = React.useCallback(
+    event => {
+      if (event.keyCode === 81) {
+        setRigged(r => {
+          console.log(!r);
+          return !r;
+        });
+      }
+    },
+    [rigged],
+  );
 
-  const handleFreeSpin = () => {
-    const fromZeroToHundred = Math.floor(Math.random() * 100);
-    if (fromZeroToHundred > 70) {
-      setSpinsLeft(spinsLeft + 1);
-      handeSnackBarSuccess();
-    }
-  };
+  useEffect(() => {
+    document.addEventListener('keyup', handleKeyPress, false);
+    axios.get('user').then(res => {
+      setSpinsLeft(res.data.tickets || 0);
+    });
+    return () => {
+      document.removeEventListener('keyup', handleKeyPress, false);
+    };
+  }, []);
 
   const handleSpinClick = () => {
     if (spinsLeft > 0 && !isSpinning) {
       setIsSpinning(true);
-      const newPrizeNumber = Math.floor(Math.random() * data.length);
-      setPrizeNumber(newPrizeNumber);
+      if (!rigged) {
+        const newPrizeNumber = Math.floor(Math.random() * data.length);
+        setPrizeNumber(newPrizeNumber);
+      } else {
+        // setPrizeNumber(2);
+        setPrizeNumber(6);
+      }
       setMustSpin(true);
       setSpinsLeft(spinsLeft - 1);
+      axios.get('gambling/spin');
+      if (prizeNumber === 6) {
+        axios.get('gambling/reward');
+      }
     } else if (isSpinning) {
       handeSnackBarWarning();
     } else {
@@ -100,8 +121,11 @@ export function Gambling(props: Props) {
     }
   };
 
-  const handeSnackBarSuccess = () => {
-    setSnackBar({ severity: 'success', message: 'Gavote nemokamą sukimą!' });
+  const handeSnackBarSuccess = message => {
+    setSnackBar({
+      severity: 'success',
+      message: message,
+    });
     setSnackBarState({ ...snackBarState, open: true });
   };
 
@@ -128,11 +152,11 @@ export function Gambling(props: Props) {
           variant="outlined"
         />
       </SpinsLeft>
-      <Item>
+      {/* <Item>
         <Button variant="outlined" onClick={handleFreeSpin}>
           Pirkti bileta - paspaudus 29 proc tikimybe kad gales spinint rata
         </Button>
-      </Item>
+      </Item> */}
 
       <Item>
         <Box
@@ -147,8 +171,14 @@ export function Gambling(props: Props) {
             onStopSpinning={() => {
               setMustSpin(false);
               setIsSpinning(false);
+              if (prizeNumber === 2) {
+                handeSnackBarSuccess('Laimejote 10 balu už atlikta darba');
+              }
+              if (prizeNumber === 6) {
+                handeSnackBarSuccess('Laimejote Skrydi');
+              }
             }}
-            prizeNumber={data.length - 1}
+            prizeNumber={prizeNumber}
             data={data}
             backgroundColors={backgroundColors}
             textColors={['#ffffff']}

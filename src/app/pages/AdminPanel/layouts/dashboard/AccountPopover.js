@@ -3,7 +3,8 @@ import { useRef, useState } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import axios from '../../../../../axiosConfig';
 // material
 import { alpha } from '@mui/material/styles';
 import {
@@ -28,15 +29,15 @@ const MENU_OPTIONS = [
     icon: homeFill,
     linkTo: '/',
   },
-  {
-    label: 'Profile',
-    icon: personFill,
-    linkTo: '#',
-  },
+  // {
+  //   label: 'Profile',
+  //   icon: personFill,
+  //   linkTo: '#',
+  // },
   {
     label: 'Settings',
     icon: settings2Fill,
-    linkTo: '#',
+    linkTo: '/settings',
   },
 ];
 
@@ -45,12 +46,24 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const logout = () => {
+    axios
+      .post('logout')
+      .then(res => {})
+      .finally(() => {
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('user');
+        navigate('/');
+      });
   };
 
   return (
@@ -118,7 +131,7 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth color="inherit" variant="outlined" onClick={logout}>
             Logout
           </Button>
         </Box>

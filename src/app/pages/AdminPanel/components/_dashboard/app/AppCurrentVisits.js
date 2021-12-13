@@ -7,6 +7,8 @@ import { Card, CardHeader } from '@mui/material';
 import { fNumber } from '../../../utils/formatNumber';
 //
 import { BaseOptionChart } from '../../charts';
+import { useEffect, useState } from 'react';
+import axios from '../../../../../../axiosConfig';
 
 // ----------------------------------------------------------------------
 
@@ -35,31 +37,44 @@ const CHART_DATA = [4344, 5435, 1443, 4443];
 
 export default function AppCurrentVisits() {
   const theme = useTheme();
-
-  const chartOptions = merge(BaseOptionChart(), {
-    colors: [
-      theme.palette.primary.main,
-      theme.palette.info.main,
-      theme.palette.warning.main,
-      theme.palette.error.main,
-    ],
-    labels: ['America', 'Asia', 'Europe', 'Africa'],
-    stroke: { colors: [theme.palette.background.paper] },
-    legend: { floating: true, horizontalAlign: 'center' },
-    dataLabels: { enabled: true, dropShadow: { enabled: false } },
-    tooltip: {
-      fillSeriesColor: false,
-      y: {
-        formatter: seriesName => fNumber(seriesName),
-        title: {
-          formatter: seriesName => `#${seriesName}`,
+  const [data, setData] = useState([]);
+  const [options, setOptions] = useState(
+    merge(BaseOptionChart(), {
+      colors: [
+        theme.palette.primary.main,
+        theme.palette.info.main,
+        theme.palette.warning.main,
+        theme.palette.error.main,
+      ],
+      labels: ['Loading'],
+      stroke: { colors: [theme.palette.background.paper] },
+      legend: { floating: true, horizontalAlign: 'center' },
+      dataLabels: { enabled: true, dropShadow: { enabled: false } },
+      tooltip: {
+        fillSeriesColor: false,
+        y: {
+          formatter: seriesName => fNumber(seriesName),
+          title: {
+            formatter: seriesName => `#${seriesName}`,
+          },
         },
       },
-    },
-    plotOptions: {
-      pie: { donut: { labels: { show: false } } },
-    },
-  });
+      plotOptions: {
+        pie: { donut: { labels: { show: false } } },
+      },
+    }),
+  );
+
+  useEffect(() => {
+    console.log(options);
+    axios.get('/stats').then(res => {
+      setOptions({
+        ...options,
+        labels: res.data.popular_destinations.map(x => x.arrival_location),
+      });
+      setData(res.data.popular_destinations);
+    });
+  }, []);
 
   return (
     <Card>
@@ -67,8 +82,8 @@ export default function AppCurrentVisits() {
       <ChartWrapperStyle dir="ltr">
         <ReactApexChart
           type="pie"
-          series={CHART_DATA}
-          options={chartOptions}
+          series={data.map(x => x.count)}
+          options={options}
           height={280}
         />
       </ChartWrapperStyle>

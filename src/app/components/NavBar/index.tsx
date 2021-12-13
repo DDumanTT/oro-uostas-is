@@ -61,9 +61,9 @@ export default function NavBar() {
               Games
             </Button>
 
-            <Button color="inherit" component={Link} to="/statistics">
+            {/* <Button color="inherit" component={Link} to="/statistics">
               Statistics
-            </Button>
+            </Button> */}
 
             {isLogedIn() && <AccountMenu />}
 

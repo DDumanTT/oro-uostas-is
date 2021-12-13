@@ -5,6 +5,8 @@ import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
+import { useEffect, useState } from 'react';
+import axios from '../../../../../../axiosConfig';
 
 // ----------------------------------------------------------------------
 
@@ -34,15 +36,20 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 714000;
-
 export default function AppWeeklySales() {
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    axios.get('/stats').then(res => {
+      setTotal(res.data.plane_count);
+    });
+  }, []);
+
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Icon icon="bx:bxs-plane-alt" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(total)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total airplanes
       </Typography>

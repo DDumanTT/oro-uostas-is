@@ -33,6 +33,7 @@ interface Props {
   };
   delete?: boolean;
   snackbar?: any;
+  bruhwin?: any;
 }
 
 export function FlightCard(props: Props) {
@@ -78,6 +79,10 @@ export function FlightCard(props: Props) {
         //toast notification
         console.log(res);
         props.snackbar();
+
+        if (res.data.ticket_received == true) {
+          props.bruhwin();
+        }
       });
   };
 

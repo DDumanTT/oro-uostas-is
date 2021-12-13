@@ -74,6 +74,11 @@ export function SearchPage() {
     setSnackBarState({ ...snackBarState, open: true });
   };
 
+  const handeSnackBarWarning = () => {
+    setSnackBar({ severity: 'warning', message: 'You won a spin!' });
+    setSnackBarState({ ...snackBarState, open: true });
+  };
+
   const handleSnackBarClose = () => {
     setSnackBarState({ ...snackBarState, open: false });
   };
@@ -106,8 +111,7 @@ export function SearchPage() {
         },
       })
       .then(res => {
-        console.log(res);
-        setFlights(res.data.flights);
+        setFlights(res.data);
       });
   }, []);
 
@@ -139,6 +143,7 @@ export function SearchPage() {
                 flightData={item}
                 key={key}
                 snackbar={handeSnackBarSuccess}
+                bruhwin={handeSnackBarWarning}
               />
             );
           })}
